@@ -7,15 +7,12 @@
           <v-toolbar-title>Student</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+
           <v-dialog v-model="dialog" max-width="500px">
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create </v-btn>
             </template>
             <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
-
               <v-card>
                 <v-card-title>
                   <span class="text-h5">User Profile</span>
@@ -27,7 +24,10 @@
                         <v-text-field label="NISN*" v-model="nisn" required></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field label="Kelas*" v-model="kelas" required></v-text-field>
+                        <v-text-field label="NIS*" v-model="nis" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="ID Kelas*" v-model="id_kelas" required></v-text-field>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field label="Nama*" v-model="nama" required></v-text-field>
@@ -40,6 +40,9 @@
                       </v-col>
                       <v-col cols="12">
                         <v-text-field label="Username*" v-model="username" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field type="password" label="Password*" v-model="password" required></v-text-field>
                       </v-col>
                     </v-row>
                   </v-container>
@@ -54,13 +57,61 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
+
+          <v-dialog v-model="dialogEdit" max-width="500px">
             <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
+              <v-card>
+                <v-card-title>
+                  <span class="text-h5">User Profile</span>
+                </v-card-title>
+                <v-card-text>
+                  <v-container>
+                    <v-row>
+                      <v-col cols="12">
+                        <v-text-field label="NISN*" v-model="nisn" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="NIS*" v-model="nis" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="ID Kelas*" v-model="id_kelas" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="Nama*" v-model="nama" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="Alamat*" v-model="alamat" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="No. Telp*" v-model="phone" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field label="Username*" v-model="username" required></v-text-field>
+                      </v-col>
+                      <v-col cols="12">
+                        <v-text-field type="password" label="Password*" v-model="password" required></v-text-field>
+                      </v-col>
+                    </v-row>
+                  </v-container>
+                  <small>*indicates required field</small>
+                </v-card-text>
+              </v-card>
+
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
+                <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel </v-btn>
+                <v-btn color="blue darken-1" text @click="saveEdit"> Save </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+
+          <v-dialog v-model="dialogDelete" max-width="500px">
+            <v-card>
+              <v-card-title>Are you sure you want to delete this item?</v-card-title>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn color="blue darken-1" text @click="dialogDelete = false">Cancel</v-btn>
+                <v-btn color="blue darken-1" text @click="deleteItem">OK</v-btn>
                 <v-spacer></v-spacer>
               </v-card-actions>
             </v-card>
@@ -68,14 +119,17 @@
         </v-toolbar>
       </template>
 
-      <template>
-        <td style="font-weight: 500"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="text-center"></td>
+      <template v-slot:[`item.actions`]="{ item }">
+        <v-btn small icon @click="setEditValue(item)">
+          <v-icon>
+            {{ icons.mdiPencil }}
+          </v-icon>
+        </v-btn>
+        <v-btn small icon @click="setDelete(item)">
+          <v-icon>
+            {{ icons.mdiDeleteOutline }}
+          </v-icon>
+        </v-btn>
       </template>
     </v-data-table>
     <!--End Data Table -->
@@ -91,10 +145,13 @@
 </template>
 
 <script>
+import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+
 export default {
   name: 'student',
   data() {
     return {
+      key: '',
       pagination: {
         rowsPerPage: 10,
       },
@@ -103,12 +160,6 @@ export default {
       items: [],
       headers: [
         {
-          text: 'No',
-          value: 'no',
-          align: 'left',
-          width: '20px',
-        },
-        {
           text: 'NISN',
           value: 'nisn',
           align: 'left',
@@ -116,9 +167,9 @@ export default {
         },
         {
           text: 'Kelas',
-          value: 'class',
+          value: 'id_kelas',
           align: 'left',
-          width: '20px',
+          width: '100px',
         },
         {
           text: 'Nama',
@@ -134,7 +185,7 @@ export default {
         },
         {
           text: 'No. Telp',
-          value: 'no tlp',
+          value: 'no_telp',
           align: 'left',
           width: '80px',
         },
@@ -146,28 +197,39 @@ export default {
         },
         {
           text: 'Actions',
+          value: 'actions',
           align: 'left',
           width: '150px',
         },
       ],
 
       dialog: false,
+      dialogEdit: false,
       dialogDelete: false,
 
       // Form
+      id: '',
       nisn: '',
-      kelas: '',
+      nis: '',
+      id_kelas: '',
       nama: '',
       alamat: '',
       phone: '',
       username: '',
+      password: '',
 
       snackbar: false,
       message: '',
+
+      icons: {
+        mdiDeleteOutline,
+        mdiPencil,
+      },
     }
   },
 
   mounted() {
+    this.key = localStorage.getItem('Authorization')
     this.list()
   },
 
@@ -181,7 +243,10 @@ export default {
 
     async list() {
       try {
-        await this.axios.get('http://127.0.0.1:8000/lihatkelas')
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getsiswa', conf)
+        console.log(res)
+        this.items = res.data
       } catch (err) {
         console.log(err)
       }
@@ -191,16 +256,76 @@ export default {
       try {
         const body = {
           nisn: this.nisn,
-          class: this.kelas,
-          name: this.name,
+          nis: this.nis,
+          nama: this.nama,
+          id_kelas: this.id_kelas,
           alamat: this.alamat,
-          phone: this.phone,
+          no_telp: this.phone,
           username: this.username,
+          password: this.password,
         }
 
-        await this.axios.post('http://127.0.0.1:8000', body)
-        this.snackbar = true;
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.post('http://127.0.0.1:8000/api/inputsiswa', body, conf)
+        this.dialog = false
+        this.list()
+        this.snackbar = true
         this.message = 'Created Successfully'
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    setEditValue(record) {
+      this.id = record.id
+      this.nisn = record.nisn
+      this.nis = record.nis
+      this.id_kelas = record.id_kelas
+      this.nama = record.nama
+      this.alamat = record.alamat
+      this.phone = record.no_telp
+      this.username = record.username
+      this.password = record.password
+
+      this.dialogEdit = true
+    },
+
+    async saveEdit() {
+      try {
+        const body = {
+          nisn: this.nisn,
+          nis: this.nis,
+          nama: this.nama,
+          id_kelas: this.id_kelas,
+          alamat: this.alamat,
+          no_telp: this.phone,
+          username: this.username,
+          password: this.password,
+        }
+
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.put(`http://127.0.0.1:8000/api/updatesiswa/${this.nisn}`, body, conf)
+        this.dialog = false
+        this.list()
+        this.snackbar = true
+        this.message = 'Update Successfully'
+        this.dialogEdit = false
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    setDelete(record) {
+      this.nisn = record.nisn
+      this.dialogDelete = true
+    },
+
+    async deleteItem() {
+      try {
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletesiswa/${this.nisn}`, conf)
+        this.list()
+        this.dialogDelete = false
       } catch (err) {
         console.log(err)
       }

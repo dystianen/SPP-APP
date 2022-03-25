@@ -105,6 +105,10 @@ export default {
   name: 'class',
   data() {
     return {
+      pagination: {
+        rowsPerPage: 10,
+      },
+
       // header table
       items: [],
       headers: [
