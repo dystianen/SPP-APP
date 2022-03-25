@@ -4,33 +4,24 @@
       <v-card class="auth-card">
         <!-- logo -->
         <v-card-title class="d-flex align-center justify-center py-7">
-          <router-link
-            to="/"
-            class="d-flex align-center"
-          >
+          <router-link to="/" class="d-flex align-center">
             <v-img
               :src="require('@/assets/images/logos/logo.svg')"
               max-height="30px"
               max-width="30px"
               alt="logo"
               contain
-              class="me-3 "
+              class="me-3"
             ></v-img>
 
-            <h2 class="text-2xl font-weight-semibold">
-              Materio
-            </h2>
+            <h2 class="text-2xl font-weight-semibold">Materio</h2>
           </router-link>
         </v-card-title>
 
         <!-- title -->
         <v-card-text>
-          <p class="text-2xl font-weight-semibold text--primary mb-2">
-            Adventure starts here 🚀
-          </p>
-          <p class="mb-2">
-            Make your app management easy and fun!
-          </p>
+          <p class="text-2xl font-weight-semibold text--primary mb-2">Adventure starts here 🚀</p>
+          <p class="mb-2">Make your app management easy and fun!</p>
         </v-card-text>
 
         <!-- login form -->
@@ -63,12 +54,19 @@
               :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
               hide-details
               @click:append="isPasswordVisible = !isPasswordVisible"
+              class="mb-3"
             ></v-text-field>
 
-            <v-checkbox
+            <v-select
+              v-model="level"
+              outlined
+              label="Role"
               hide-details
-              class="mt-1"
-            >
+              class="mb-3"
+              :items="items_role"
+            ></v-select>
+
+            <v-checkbox hide-details class="mt-1">
               <template #label>
                 <div class="d-flex align-center flex-wrap">
                   <span class="me-2">I agree to</span><a href="javascript:void(0)">privacy policy &amp; terms</a>
@@ -76,24 +74,14 @@
               </template>
             </v-checkbox>
 
-            <v-btn
-              block
-              color="primary"
-              class="mt-6"
-            >
-              Sign Up
-            </v-btn>
+            <v-btn block color="primary" class="mt-6" @click="register"> Sign Up </v-btn>
           </v-form>
         </v-card-text>
 
         <!-- create new account  -->
         <v-card-text class="d-flex align-center justify-center flex-wrap mt-2">
-          <span class="me-2">
-            Already have an account?
-          </span>
-          <router-link :to="{ name:'pages-login' }">
-            Sign in instead
-          </router-link>
+          <span class="me-2"> Already have an account? </span>
+          <router-link :to="{ name: 'pages-login' }"> Sign in instead </router-link>
         </v-card-text>
 
         <!-- divider -->
@@ -105,13 +93,8 @@
 
         <!-- social link -->
         <v-card-actions class="d-flex justify-center">
-          <v-btn
-            v-for="link in socialLink"
-            :key="link.icon"
-            icon
-            class="ms-1"
-          >
-            <v-icon :color="$vuetify.theme.dark ? link.colorInDark:link.color">
+          <v-btn v-for="link in socialLink" :key="link.icon" icon class="ms-1">
+            <v-icon :color="$vuetify.theme.dark ? link.colorInDark : link.color">
               {{ link.icon }}
             </v-icon>
           </v-btn>
@@ -123,24 +106,14 @@
     <img
       class="auth-mask-bg"
       height="190"
-      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark':'light'}.png`)"
-    >
+      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark' : 'light'}.png`)"
+    />
 
     <!-- tree -->
-    <v-img
-      class="auth-tree"
-      width="247"
-      height="185"
-      src="@/assets/images/misc/tree.png"
-    ></v-img>
+    <v-img class="auth-tree" width="247" height="185" src="@/assets/images/misc/tree.png"></v-img>
 
     <!-- tree  -->
-    <v-img
-      class="auth-tree-3"
-      width="377"
-      height="289"
-      src="@/assets/images/misc/tree-3.png"
-    ></v-img>
+    <v-img class="auth-tree-3" width="377" height="289" src="@/assets/images/misc/tree-3.png"></v-img>
   </div>
 </template>
 
@@ -184,12 +157,31 @@ export default {
       email,
       password,
       socialLink,
+      items_role: ['admin', 'petugas'],
 
       icons: {
         mdiEyeOutline,
         mdiEyeOffOutline,
       },
     }
+  },
+
+  methods: {
+    async register() {
+      try {
+        let body = {
+          name: this.username,
+          email: this.email,
+          password: this.password,
+          password_confirmation: this.password,
+          level: this.level,
+        }
+        const res = await this.axios.post('http://127.0.0.1:8000/api/register', body)
+        this.$router.push('/pages/login')
+      } catch (err) {
+        console.log({ err })
+      }
+    },
   },
 }
 </script>

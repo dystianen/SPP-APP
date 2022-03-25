@@ -77,6 +77,7 @@
               block
               color="primary"
               class="mt-6"
+              @click="login"
             >
               Login
             </v-btn>
@@ -186,6 +187,23 @@ export default {
       },
     }
   },
+
+
+  methods: {
+    async login() {
+      try {
+        let body = {
+          email: this.email,
+          password: this.password
+        }
+        const res = await this.axios.post('http://127.0.0.1:8000/api/login', body)
+        localStorage.setItem('Authorization', res.data.token)
+        this.$router.push('/dashboard')
+      } catch (err) {
+        console.log({err})
+      }
+    }
+  }
 }
 </script>
 

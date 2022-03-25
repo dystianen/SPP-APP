@@ -3,7 +3,7 @@
   <v-data-table :headers="headers" :items="items">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>Class</v-toolbar-title>
+        <v-toolbar-title>KELAS</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
@@ -167,16 +167,6 @@ export default {
   methods: {
     close() {
       this.dialog = false
-    },
-
-    isSave() {
-      if (this.isEdit === true) {
-        this.saveEdit
-        console.log('masukk edit')
-      } else {
-        this.save
-        console.log('masukk create')
-      }
     },
 
     async list() {

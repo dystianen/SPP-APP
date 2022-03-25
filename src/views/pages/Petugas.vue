@@ -1,98 +1,114 @@
 <template>
   <!--Start Data Table -->
-  <div>
-    <v-data-table :headers="headers" :items="items">
-      <template v-slot:top>
-        <v-toolbar flat>
-          <v-toolbar-title>Student</v-toolbar-title>
-          <v-divider class="mx-4" inset vertical></v-divider>
-          <v-spacer></v-spacer>
-          <v-dialog v-model="dialog" max-width="500px">
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create </v-btn>
-            </template>
-            <v-card>
-              <v-card-title>
-                <span class="text-h5">{{ formTitle }}</span>
-              </v-card-title>
+  <v-data-table :headers="headers" :items="items">
+    <template v-slot:top>
+      <v-toolbar flat>
+        <v-toolbar-title>Petugas</v-toolbar-title>
+        <v-divider class="mx-4" inset vertical></v-divider>
+        <v-spacer></v-spacer>
 
-              <v-card>
-                <v-card-title>
-                  <span class="text-h5">User Profile</span>
-                </v-card-title>
-                <v-card-text>
-                  <v-container>
-                    <v-row>
-                      <v-col cols="12">
-                        <v-text-field label="NISN*" v-model="nisn" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Kelas*" v-model="kelas" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Nama*" v-model="nama" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Alamat*" v-model="alamat" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="No. Telp*" v-model="phone" required></v-text-field>
-                      </v-col>
-                      <v-col cols="12">
-                        <v-text-field label="Username*" v-model="username" required></v-text-field>
-                      </v-col>
-                    </v-row>
-                  </v-container>
-                  <small>*indicates required field</small>
-                </v-card-text>
-              </v-card>
+        <v-dialog v-model="dialog" max-width="500px">
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create</v-btn>
+          </template>
+          <v-card>
+            <v-card-title>
+              <span>Create Petugas</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Username*" v-model="username" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field type="password" label="Password*" v-model="password" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Nama Petugas*" v-model="nama_petugas" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select label="Level/Role*" v-model="role" :items="items_role" required> </v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
 
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="close"> Cancel </v-btn>
-                <v-btn color="blue darken-1" text @click="save"> Save </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="dialogDelete" max-width="500px">
-            <v-card>
-              <v-card-title class="text-h5">Are you sure you want to delete this item?</v-card-title>
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="closeDelete">Cancel</v-btn>
-                <v-btn color="blue darken-1" text @click="deleteItemConfirm">OK</v-btn>
-                <v-spacer></v-spacer>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-        </v-toolbar>
-      </template>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="close"> Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="save"> Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <template>
-        <td style="font-weight: 500"></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td class="text-center"></td>
-      </template>
-    </v-data-table>
-    <!--End Data Table -->
+        <v-dialog v-model="dialogEdit" max-width="500px">
+          <v-card>
+            <v-card-title>
+              <span>Edit Petugas</span>
+            </v-card-title>
+            <v-card-text>
+              <v-container>
+                <v-row>
+                  <v-col cols="12">
+                    <v-text-field label="Username*" v-model="username" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field type="password" label="Password*" v-model="password" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Nama Petugas*" v-model="nama_petugas" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-select label="Level/Role*" v-model="role" :items="items_role" required> </v-select>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-card-text>
 
-    <v-snackbar v-model="snackbar">
-      {{ message }}
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="saveEdit"> Save</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
 
-      <template v-slot:action="{ attrs }">
-        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
-      </template>
-    </v-snackbar>
-  </div>
+        <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-card>
+            <v-card-title>Are you sure you want to delete this item?</v-card-title>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="blue darken-1" text @click="dialogDelete = false">Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="deleteItem">OK</v-btn>
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
+      </v-toolbar>
+    </template>
+
+    <template v-slot:[`item.actions`]="{ item }">
+      <v-btn small icon @click="setEditValue(item)">
+        <v-icon>
+          {{ icons.mdiPencil }}
+        </v-icon>
+      </v-btn>
+      <v-btn small icon @click="setDelete(item)">
+        <v-icon>
+          {{ icons.mdiDeleteOutline }}
+        </v-icon>
+      </v-btn>
+    </template>
+  </v-data-table>
+  <!--End Data Table -->
 </template>
 
 <script>
+import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+
 export default {
-  name: 'student',
+  name: 'class',
   data() {
     return {
       pagination: {
@@ -103,85 +119,70 @@ export default {
       items: [],
       headers: [
         {
-          text: 'No',
-          value: 'no',
+          text: 'ID Petugas',
+          value: 'id_petugas',
           align: 'left',
           width: '20px',
         },
         {
-          text: 'NISN',
-          value: 'nisn',
+          text: 'Nama Petugas',
+          value: 'nama_petugas',
+          align: 'left',
+          width: '100px',
+        },
+        {
+          text: 'Email',
+          value: 'email',
           align: 'left',
           width: '20px',
         },
         {
-          text: 'Kelas',
-          value: 'class',
-          align: 'left',
-          width: '20px',
-        },
-        {
-          text: 'Nama',
-          value: 'nama',
-          align: 'left',
-          width: '20px',
-        },
-        {
-          text: 'Alamat',
-          value: 'alamat',
-          align: 'left',
-          width: '20px',
-        },
-        {
-          text: 'No. Telp',
-          value: 'no tlp',
-          align: 'left',
-          width: '80px',
-        },
-        {
-          text: 'Username',
-          value: 'username',
+          text: 'Role',
+          value: 'level',
           align: 'left',
           width: '20px',
         },
         {
           text: 'Actions',
+          value: 'actions',
           align: 'left',
           width: '150px',
         },
       ],
-
       dialog: false,
       dialogDelete: false,
+      dialogEdit: false,
 
-      // Form
-      nisn: '',
-      kelas: '',
-      nama: '',
-      alamat: '',
-      phone: '',
+      id: '',
       username: '',
+      password: '',
+      nama_petugas: '',
+      role: '',
+      items_role: ['admin', 'petugas'],
 
-      snackbar: false,
-      message: '',
+      icons: {
+        mdiDeleteOutline,
+        mdiPencil,
+      },
     }
   },
 
   mounted() {
+    this.key = localStorage.getItem('Authorization')
     this.list()
   },
 
   methods: {
     close() {
       this.dialog = false
-      this.$nextTick(() => {
-        this.editedIndex = -1
-      })
     },
 
     async list() {
       try {
-        await this.axios.get('http://127.0.0.1:8000/getpetugas')
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getpetugas', conf)
+        console.log(res.data)
+        this.items = res.data.data
       } catch (err) {
         console.log(err)
       }
@@ -190,17 +191,64 @@ export default {
     async save() {
       try {
         const body = {
-          nisn: this.nisn,
-          class: this.kelas,
-          name: this.name,
-          alamat: this.alamat,
-          phone: this.phone,
-          username: this.username,
+          email: this.username,
+          password: this.password,
+          nama_petugas: this.nama_petugas,
+          level: this.role,
         }
 
-        await this.axios.post('http://127.0.0.1:8000', body)
-        this.snackbar = true;
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.post('http://127.0.0.1:8000/api/inputpetugas', body, conf)
+        this.list()
+        this.dialog = false
+        this.snackbar = true
         this.message = 'Created Successfully'
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    setEditValue(record) {
+      this.id = record.id_petugas
+      this.username = record.email
+      this.password = record.password
+      this.nama_petugas = record.nama_petugas
+      this.role = record.level
+
+      this.dialogEdit = true
+    },
+
+    async saveEdit() {
+      try {
+        const body = {
+          email: this.username,
+          password: this.password,
+          nama_petugas: this.nama_petugas,
+          level: this.role,
+        }
+
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.put(`http://127.0.0.1:8000/api/updatepetugas/${this.id}`, body, conf)
+        this.list()
+        this.dialogEdit = false
+        this.snackbar = true
+        this.message = 'Edit Successfully'
+      } catch (err) {
+        console.log(err)
+      }
+    },
+
+    setDelete(record) {
+      this.id = record.id_petugas
+      this.dialogDelete = true
+    },
+
+    async deleteItem() {
+      try {
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletepetugas/${this.id}`, conf)
+        this.list()
+        this.dialogDelete = false
       } catch (err) {
         console.log(err)
       }
