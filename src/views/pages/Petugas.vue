@@ -181,7 +181,7 @@ export default {
 
     async list() {
       try {
-        await this.axios.get('http://127.0.0.1:8000/lihatkelas')
+        await this.axios.get('http://127.0.0.1:8000/getpetugas')
       } catch (err) {
         console.log(err)
       }

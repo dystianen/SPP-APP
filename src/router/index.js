@@ -26,7 +26,12 @@ const routes = [
   {
     path: '/class',
     name: 'class',
-    component: () => import('@/views/pages/Class.vue'),
+    component: () => import('@/views/pages/Kelas.vue'),
+  },
+  {
+    path: '/operator',
+    name: 'petugas',
+    component: () => import('@/views/pages/Petugas.vue'),
   },
   {
     path: '/pages/login',

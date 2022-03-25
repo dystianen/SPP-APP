@@ -68,9 +68,14 @@
         :to="{ name: 'student' }"
         :icon="icons.mdiTable"
       ></nav-menu-link>
-            <nav-menu-link
+      <nav-menu-link
         title="Class"
         :to="{ name: 'class' }"
+        :icon="icons.mdiTable"
+      ></nav-menu-link>
+      <nav-menu-link
+        title="Petugas"
+        :to="{ name: 'petugas' }"
         :icon="icons.mdiTable"
       ></nav-menu-link>
     </v-list>
@@ -135,12 +140,13 @@ export default {
 // ? Adjust this `translateX` value to keep logo in center when vertical nav menu is collapsed (Value depends on your logo)
 .app-logo {
   transition: all 0.18s ease-in-out;
+
   .v-navigation-drawer--mini-variant & {
     transform: translateX(-4px);
   }
 }
 
-@include theme(app-navigation-menu) using ($material) {
+@include theme(app-navigation-menu) using($material) {
   background-color: map-deep-get($material, 'background');
 }
 
