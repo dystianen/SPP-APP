@@ -90,6 +90,7 @@ import {
   mdiEmoticonHappyOutline,
   mdiFileMultipleOutline,
   mdiFlaskEmptyOutline,
+  mdiPencil 
 } from '@mdi/js'
 
 export default {
@@ -146,6 +147,7 @@ export default {
       { icon: mdiEmoticonHappyOutline, name: 'mdiEmoticonHappyOutline' },
       { icon: mdiFileMultipleOutline, name: 'mdiFileMultipleOutline' },
       { icon: mdiFlaskEmptyOutline, name: 'mdiFlaskEmptyOutline' },
+      { icon: mdiPencil, name: 'mdiPencil' },
     ]
 
     return {
