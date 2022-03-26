@@ -3,7 +3,7 @@
   <v-data-table :headers="headers" :items="items">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>KELAS</v-toolbar-title>
+        <v-toolbar-title>Pembayaran SPP</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
@@ -13,19 +13,40 @@
           </template>
           <v-card>
             <v-card-title>
-              <span>Create Kelas</span>
+              <span>Input Pembayaran</span>
             </v-card-title>
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field label="Nama Kelas*" v-model="classname" required></v-text-field>
+                    <v-text-field label="NISN*" v-model="nisn" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Jurusan*" v-model="jurusan" required></v-text-field>
+                    <v-menu
+                      v-model="menu2"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="Tanggal Bayar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                    </v-menu>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Angkatan*" v-model="angkatan" required></v-text-field>
+                    <v-text-field label="Bulan SPP*" v-model="bulan_spp" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Tahun SPP*" v-model="tahun_spp" required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -42,19 +63,40 @@
         <v-dialog v-model="dialogEdit" max-width="500px">
           <v-card>
             <v-card-title>
-              <span>Edit Kelas</span>
+              <span>Edit Pembayaran</span>
             </v-card-title>
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field label="Nama Kelas*" v-model="classname" required></v-text-field>
+                    <v-text-field label="NISN*" v-model="nisn" required></v-text-field>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Jurusan*" v-model="jurusan" required></v-text-field>
+                    <v-menu
+                      v-model="menu2"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      transition="scale-transition"
+                      offset-y
+                      min-width="auto"
+                    >
+                      <template v-slot:activator="{ on, attrs }">
+                        <v-text-field
+                          v-model="date"
+                          label="Tanggal Bayar"
+                          readonly
+                          v-bind="attrs"
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="date" @input="menu2 = false"></v-date-picker>
+                    </v-menu>
                   </v-col>
                   <v-col cols="12">
-                    <v-text-field label="Angkatan*" v-model="angkatan" required></v-text-field>
+                    <v-text-field label="Bulan SPP*" v-model="bulan_spp" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Tahun SPP*" v-model="tahun_spp" required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -62,7 +104,7 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="reset"> Cancel</v-btn>
               <v-btn color="blue darken-1" text @click="saveEdit"> Save</v-btn>
             </v-card-actions>
           </v-card>
@@ -99,7 +141,7 @@
 </template>
 
 <script>
-import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+import { mdiDeleteOutline, mdiPencil, mdiCalendar } from '@mdi/js'
 
 export default {
   name: 'class',
@@ -113,26 +155,39 @@ export default {
       items: [],
       headers: [
         {
-          text: 'ID Kelas',
-          value: 'id_kelas',
+          text: 'ID Pembayaran',
+          value: 'id_pembayaran',
           align: 'left',
           width: '20px',
         },
         {
-          text: 'Nama Kelas',
-          value: 'nama_kelas',
+          text: 'NISN',
+          value: 'nisn',
+          align: 'left',
+          width: '100px',
+        },
+        {
+          text: 'Nama',
+          value: 'nama',
           align: 'left',
           width: '20px',
         },
         {
-          text: 'Jurusan',
-          value: 'jurusan',
+          text: 'No. Telp',
+          value: 'no_telp',
           align: 'left',
           width: '20px',
         },
         {
-          text: 'Angkatan',
-          value: 'angkatan',
+          text: 'Tanggal Bayar',
+          value: 'tgl_bayar',
+          align: 'left',
+          sortable: false,
+          width: '20px',
+        },
+        {
+          text: 'Alamat',
+          value: 'alamat',
           align: 'left',
           width: '20px',
         },
@@ -140,7 +195,7 @@ export default {
           text: 'Actions',
           value: 'actions',
           align: 'left',
-          width: '150px',
+          width: '50px',
         },
       ],
       dialog: false,
@@ -148,13 +203,26 @@ export default {
       dialogEdit: false,
 
       id: '',
-      classname: '',
-      jurusan: '',
-      angkatan: '',
+      nisn: '',
+      tgl_bayar: '',
+      bulan_spp: '',
+      tahun_spp: '',
+
+      date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000).toISOString().substr(0, 10),
+      menu: false,
+      modal: false,
+      menu2: false,
+
+      // Tanggal Mulai
+      startDateMenu: false,
+      startDate: '',
+      startDateRules: [v => !!v || 'Kolom ini harus diisi.'],
+      date: '',
 
       icons: {
         mdiDeleteOutline,
         mdiPencil,
+        mdiCalendar,
       },
     }
   },
@@ -172,7 +240,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getpembayaran', conf)
         console.log(res.data)
         this.items = res.data.data
       } catch (err) {
@@ -183,13 +251,15 @@ export default {
     async save() {
       try {
         const body = {
-          nama_kelas: this.classname,
-          jurusan: this.jurusan,
-          angkatan: this.angkatan,
+          id_petugas: localStorage.getItem('id_petugas'),
+          nisn: this.nisn,
+          tgl_bayar: this.date,
+          bulan_spp: this.bulan_spp,
+          tahun_spp: this.tahun_spp,
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputkelas', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/inputpembayaran', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -199,16 +269,38 @@ export default {
       }
     },
 
+    reset() {
+      this.id = ''
+      this.nisn = ''
+      this.date = ''
+      this.bulan_spp = ''
+      this.tahun_spp = ''
+
+      this.dialogEdit = false
+    },
+
+    setEditValue(record) {
+      this.id = record.id_pembayaran
+      this.nisn = record.nisn
+      this.date = record.tgl_bayar
+      this.bulan_spp = record.bulan_spp
+      this.tahun_spp = record.tahun_spp
+
+      this.dialogEdit = true
+    },
+
     async saveEdit() {
       try {
         const body = {
-          nama_kelas: this.classname,
-          jurusan: this.jurusan,
-          angkatan: this.angkatan,
+          id_petugas: localStorage.getItem('id_petugas'),
+          nisn: this.nisn,
+          tgl_bayar: this.date,
+          bulan_spp: this.bulan_spp,
+          tahun_spp: this.tahun_spp,
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatekelas/${this.id}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatepembayaran/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -218,24 +310,15 @@ export default {
       }
     },
 
-    setEditValue(record) {
-      this.id = record.id_kelas
-      this.classname = record.nama_kelas
-      this.jurusan = record.jurusan
-      this.angkatan = record.angkatan
-
-      this.dialogEdit = true
-    },
-
     setDelete(record) {
-      this.id = record.id_kelas
+      this.id = record.id_spp
       this.dialogDelete = true
     },
 
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletekelas/${this.id}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/hapuspembayaran/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

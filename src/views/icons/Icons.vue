@@ -1,17 +1,9 @@
 <template>
   <div id="icons-container">
     <div class="d-flex align-center flex-wrap">
-      <v-tooltip
-        v-for="item in iconsList"
-        :key="item.icon"
-        top
-      >
+      <v-tooltip v-for="item in iconsList" :key="item.icon" top>
         <template v-slot:activator="{ on, attrs }">
-          <v-card
-            v-bind="attrs"
-            class="icons-card mb-6 me-6"
-            v-on="on"
-          >
+          <v-card v-bind="attrs" class="icons-card mb-6 me-6" v-on="on">
             <v-card-text class="py-3 px-4">
               <v-icon size="30">
                 {{ item.icon }}
@@ -25,12 +17,7 @@
 
     <!-- more icons -->
     <div class="text-center">
-      <v-btn
-        href="https://materialdesignicons.com/"
-        target="_blank"
-        rel="nofollow"
-        color="primary"
-      >
+      <v-btn href="https://materialdesignicons.com/" target="_blank" rel="nofollow" color="primary">
         View All Material Design Icons
       </v-btn>
     </div>
@@ -90,7 +77,10 @@ import {
   mdiEmoticonHappyOutline,
   mdiFileMultipleOutline,
   mdiFlaskEmptyOutline,
-  mdiPencil 
+  mdiPencil,
+  mdiCreditCardOutline,
+  mdiAndroidMessages,
+  mdiCalendar,
 } from '@mdi/js'
 
 export default {
@@ -148,6 +138,9 @@ export default {
       { icon: mdiFileMultipleOutline, name: 'mdiFileMultipleOutline' },
       { icon: mdiFlaskEmptyOutline, name: 'mdiFlaskEmptyOutline' },
       { icon: mdiPencil, name: 'mdiPencil' },
+      { icon: mdiCreditCardOutline, name: 'mdiCreditCardOutline' },
+      { icon: mdiAndroidMessages, name: 'mdiAndroidMessages' },
+      { icon: mdiCalendar, name: 'mdiCalendar' },
     ]
 
     return {

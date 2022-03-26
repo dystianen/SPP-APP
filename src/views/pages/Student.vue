@@ -27,7 +27,7 @@
                         <v-text-field label="NIS*" v-model="nis" required></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field label="ID Kelas*" v-model="id_kelas" required></v-text-field>
+                        <v-select label="Kelas*" v-model="id_kelas" :items="items_kelas" required> </v-select>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field label="Nama*" v-model="nama" required></v-text-field>
@@ -74,7 +74,7 @@
                         <v-text-field label="NIS*" v-model="nis" required></v-text-field>
                       </v-col>
                       <v-col cols="12">
-                        <v-text-field label="ID Kelas*" v-model="id_kelas" required></v-text-field>
+                        <v-select label="Kelas*" v-model="id_kelas" :items="items_kelas" required> </v-select>
                       </v-col>
                       <v-col cols="12">
                         <v-text-field label="Nama*" v-model="nama" required></v-text-field>
@@ -218,6 +218,9 @@ export default {
       username: '',
       password: '',
 
+      // kelas
+      items_kelas: [],
+
       snackbar: false,
       message: '',
 
@@ -231,6 +234,7 @@ export default {
   mounted() {
     this.key = localStorage.getItem('Authorization')
     this.list()
+    this.listKelas()
   },
 
   methods: {
@@ -239,6 +243,27 @@ export default {
       this.$nextTick(() => {
         this.editedIndex = -1
       })
+    },
+
+    async listKelas() {
+      try {
+        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
+        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
+        console.log(res.data)
+        const result = res.data.data
+
+        if (result.length > 0) {
+          for (let i = 0; i < result.length; i++) {
+            const dataKelas = {
+              value: result[i].id_kelas,
+              text: result[i].nama_kelas,
+            }
+            this.items_kelas.push(dataKelas)
+          }
+        }
+      } catch (err) {
+        console.log(err)
+      }
     },
 
     async list() {

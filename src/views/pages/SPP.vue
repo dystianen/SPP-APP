@@ -3,7 +3,7 @@
   <v-data-table :headers="headers" :items="items">
     <template v-slot:top>
       <v-toolbar flat>
-        <v-toolbar-title>KELAS</v-toolbar-title>
+        <v-toolbar-title>SPP</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
@@ -13,19 +13,19 @@
           </template>
           <v-card>
             <v-card-title>
-              <span>Create Kelas</span>
+              <span>Create Petugas</span>
             </v-card-title>
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field label="Nama Kelas*" v-model="classname" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field label="Jurusan*" v-model="jurusan" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
                     <v-text-field label="Angkatan*" v-model="angkatan" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Tahun*" v-model="tahun" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Nominal*" v-model="nominal" required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -42,19 +42,19 @@
         <v-dialog v-model="dialogEdit" max-width="500px">
           <v-card>
             <v-card-title>
-              <span>Edit Kelas</span>
+              <span>Edit Petugas</span>
             </v-card-title>
             <v-card-text>
               <v-container>
                 <v-row>
                   <v-col cols="12">
-                    <v-text-field label="Nama Kelas*" v-model="classname" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
-                    <v-text-field label="Jurusan*" v-model="jurusan" required></v-text-field>
-                  </v-col>
-                  <v-col cols="12">
                     <v-text-field label="Angkatan*" v-model="angkatan" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Tahun*" v-model="tahun" required></v-text-field>
+                  </v-col>
+                  <v-col cols="12">
+                    <v-text-field label="Nominal*" v-model="nominal" required></v-text-field>
                   </v-col>
                 </v-row>
               </v-container>
@@ -113,26 +113,26 @@ export default {
       items: [],
       headers: [
         {
-          text: 'ID Kelas',
-          value: 'id_kelas',
-          align: 'left',
-          width: '20px',
-        },
-        {
-          text: 'Nama Kelas',
-          value: 'nama_kelas',
-          align: 'left',
-          width: '20px',
-        },
-        {
-          text: 'Jurusan',
-          value: 'jurusan',
+          text: 'ID SPP',
+          value: 'id_spp',
           align: 'left',
           width: '20px',
         },
         {
           text: 'Angkatan',
           value: 'angkatan',
+          align: 'left',
+          width: '100px',
+        },
+        {
+          text: 'Tahun',
+          value: 'tahun',
+          align: 'left',
+          width: '20px',
+        },
+        {
+          text: 'Nominal',
+          value: 'nominal',
           align: 'left',
           width: '20px',
         },
@@ -148,9 +148,9 @@ export default {
       dialogEdit: false,
 
       id: '',
-      classname: '',
-      jurusan: '',
       angkatan: '',
+      tahun: '',
+      nominal: '',
 
       icons: {
         mdiDeleteOutline,
@@ -172,7 +172,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getspp', conf)
         console.log(res.data)
         this.items = res.data.data
       } catch (err) {
@@ -183,13 +183,13 @@ export default {
     async save() {
       try {
         const body = {
-          nama_kelas: this.classname,
-          jurusan: this.jurusan,
           angkatan: this.angkatan,
+          tahun: this.tahun,
+          nominal: this.nominal,
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputkelas', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/inputspp', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -199,16 +199,25 @@ export default {
       }
     },
 
+    setEditValue(record) {
+      this.id = record.id_spp
+      this.angkatan = record.angkatan
+      this.tahun = record.tahun
+      this.nominal = record.nominal
+
+      this.dialogEdit = true
+    },
+
     async saveEdit() {
       try {
         const body = {
-          nama_kelas: this.classname,
-          jurusan: this.jurusan,
           angkatan: this.angkatan,
+          tahun: this.tahun,
+          nominal: this.nominal,
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatekelas/${this.id}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatespp/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -218,24 +227,15 @@ export default {
       }
     },
 
-    setEditValue(record) {
-      this.id = record.id_kelas
-      this.classname = record.nama_kelas
-      this.jurusan = record.jurusan
-      this.angkatan = record.angkatan
-
-      this.dialogEdit = true
-    },
-
     setDelete(record) {
-      this.id = record.id_kelas
+      this.id = record.id_spp
       this.dialogDelete = true
     },
 
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletekelas/${this.id}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletespp/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

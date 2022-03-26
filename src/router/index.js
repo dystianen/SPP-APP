@@ -34,6 +34,21 @@ const routes = [
     component: () => import('@/views/pages/Petugas.vue'),
   },
   {
+    path: '/spp',
+    name: 'spp',
+    component: () => import('@/views/pages/SPP.vue'),
+  },
+  {
+    path: '/pembayaran',
+    name: 'pembayaran',
+    component: () => import('@/views/pages/Pembayaran.vue'),
+  },
+  {
+    path: '/history',
+    name: 'history',
+    component: () => import('@/views/pages/History.vue'),
+  },
+  {
     path: '/pages/login',
     name: 'pages-login',
     component: () => import('@/views/pages/Login.vue'),

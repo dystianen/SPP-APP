@@ -21,7 +21,7 @@
           class="app-logo me-3"
         ></v-img>
         <v-slide-x-transition>
-          <h2 class="app-title text--primary">MATERIO</h2>
+          <h2 class="app-title text--primary">MY SPP</h2>
         </v-slide-x-transition>
       </router-link>
     </div>
@@ -29,14 +29,43 @@
     <!-- Navigation Items -->
     <v-list expand shaped class="vertical-nav-menu-items pr-5">
       <nav-menu-link title="Dashboard" :to="{ name: 'dashboard' }" :icon="icons.mdiHomeOutline"></nav-menu-link>
-      <nav-menu-group title="Pages" :icon="icons.mdiFileOutline">
-        <nav-menu-link title="Login" :to="{ name: 'pages-login' }" target="_blank"></nav-menu-link>
-        <nav-menu-link title="Register" :to="{ name: 'pages-register' }" target="_blank"></nav-menu-link>
-      </nav-menu-group>
       <nav-menu-section-title title="USER INTERFACE"></nav-menu-section-title>
-      <nav-menu-link title="Student" :to="{ name: 'student' }" :icon="icons.mdiAccountBoxMultiple"></nav-menu-link>
-      <nav-menu-link title="Class" :to="{ name: 'class' }" :icon="icons.mdiTable"></nav-menu-link>
-      <nav-menu-link title="Petugas" :to="{ name: 'petugas' }" :icon="icons.mdiAccountEditOutline "></nav-menu-link>
+      <nav-menu-link
+        v-if="role === 'admin'"
+        title="Siswa"
+        :to="{ name: 'student' }"
+        :icon="icons.mdiAccountBoxMultiple"
+      ></nav-menu-link>
+      <nav-menu-link
+        v-if="role === 'admin'"
+        title="Kelas"
+        :to="{ name: 'class' }"
+        :icon="icons.mdiTable"
+      ></nav-menu-link>
+      <nav-menu-link
+        v-if="role === 'admin'"
+        title="Petugas"
+        :to="{ name: 'petugas' }"
+        :icon="icons.mdiAccountEditOutline"
+      ></nav-menu-link>
+      <nav-menu-link
+        v-if="role === 'admin'"
+        title="SPP"
+        :to="{ name: 'spp' }"
+        :icon="icons.mdiAndroidMessages"
+      ></nav-menu-link>
+      <nav-menu-link
+        v-if="role === 'admin' || role === 'petugas'"
+        title="Pembayaran"
+        :to="{ name: 'pembayaran' }"
+        :icon="icons.mdiAndroidMessages"
+      ></nav-menu-link>
+      <nav-menu-link
+        v-if="siswa == 'true'"
+        title="History"
+        :to="{ name: 'history' }"
+        :icon="icons.mdiAccountEditOutline"
+      ></nav-menu-link>
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -53,7 +82,8 @@ import {
   mdiFormSelect,
   mdiAccountCogOutline,
   mdiAccountBoxMultiple,
-  mdiAccountEditOutline 
+  mdiAccountEditOutline,
+  mdiAndroidMessages,
 } from '@mdi/js'
 import NavMenuSectionTitle from './components/NavMenuSectionTitle.vue'
 import NavMenuGroup from './components/NavMenuGroup.vue'
@@ -73,6 +103,8 @@ export default {
   },
   setup() {
     return {
+      role: '',
+      siswa: '',
       icons: {
         mdiHomeOutline,
         mdiAlphaTBoxOutline,
@@ -83,9 +115,15 @@ export default {
         mdiFormSelect,
         mdiAccountCogOutline,
         mdiAccountBoxMultiple,
-        mdiAccountEditOutline ,
+        mdiAccountEditOutline,
+        mdiAndroidMessages,
       },
     }
+  },
+
+  mounted() {
+    this.siswa = localStorage.getItem('isSiswa')
+    this.role = localStorage.getItem('role')
   },
 }
 </script>

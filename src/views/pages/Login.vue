@@ -1,144 +1,92 @@
 <template>
   <div class="auth-wrapper auth-v1">
-    <div class="auth-inner">
-      <v-card class="auth-card">
-        <!-- logo -->
-        <v-card-title class="d-flex align-center justify-center py-7">
-          <router-link
-            to="/"
-            class="d-flex align-center"
-          >
-            <v-img
-              :src="require('@/assets/images/logos/logo.svg')"
-              max-height="30px"
-              max-width="30px"
-              alt="logo"
-              contain
-              class="me-3 "
-            ></v-img>
+    <template v-if="isLogin === ''">
+      <v-btn color="primary" class="mr-3" @click="isLogin = 'admin'">Admin</v-btn>
+      <v-btn color="primary" class="mr-3 ml-3" @click="isLogin = 'admin'">Petugas</v-btn>
+      <v-btn color="primary" class="ml-3" @click="isLogin = 'siswa'">Siswa</v-btn>
+    </template>
+    <template v-if="isLogin !== ''">
+      <div class="auth-inner">
+        <v-card class="auth-card">
+          <!-- logo -->
+          <v-card-title class="d-flex align-center justify-center py-7">
+            <router-link to="/" class="d-flex align-center">
+              <v-img
+                :src="require('@/assets/images/logos/logo.svg')"
+                max-height="30px"
+                max-width="30px"
+                alt="logo"
+                contain
+                class="me-3"
+              ></v-img>
 
-            <h2 class="text-2xl font-weight-semibold">
-              Materio
-            </h2>
-          </router-link>
-        </v-card-title>
+              <h2 class="text-2xl font-weight-semibold">MY SPP</h2>
+            </router-link>
+          </v-card-title>
 
-        <!-- title -->
-        <v-card-text>
-          <p class="text-2xl font-weight-semibold text--primary mb-2">
-            Welcome to Materio! 👋🏻
-          </p>
-          <p class="mb-2">
-            Please sign-in to your account and start the adventure
-          </p>
-        </v-card-text>
+          <!-- title -->
+          <v-card-text>
+            <p class="text-2xl font-weight-semibold text--primary mb-2">Welcome to MY SPP! 👋🏻</p>
+            <p class="mb-2">Please sign-in to your account and start the adventure</p>
+          </v-card-text>
 
-        <!-- login form -->
-        <v-card-text>
-          <v-form>
-            <v-text-field
-              v-model="email"
-              outlined
-              label="Email"
-              placeholder="john@example.com"
-              hide-details
-              class="mb-3"
-            ></v-text-field>
-
-            <v-text-field
-              v-model="password"
-              outlined
-              :type="isPasswordVisible ? 'text' : 'password'"
-              label="Password"
-              placeholder="············"
-              :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
-              hide-details
-              @click:append="isPasswordVisible = !isPasswordVisible"
-            ></v-text-field>
-
-            <div class="d-flex align-center justify-space-between flex-wrap">
-              <v-checkbox
-                label="Remember Me"
+          <!-- login form -->
+          <v-card-text>
+            <v-form>
+              <v-text-field
+                v-model="email"
+                outlined
+                label="Email"
+                placeholder="john@example.com"
                 hide-details
-                class="me-3 mt-1"
-              >
-              </v-checkbox>
+                class="mb-3"
+              ></v-text-field>
 
-              <!-- forgot link -->
-              <a
-                href="javascript:void(0)"
-                class="mt-1"
-              >
-                Forgot Password?
-              </a>
-            </div>
+              <v-text-field
+                v-model="password"
+                outlined
+                :type="isPasswordVisible ? 'text' : 'password'"
+                label="Password"
+                placeholder="············"
+                :append-icon="isPasswordVisible ? icons.mdiEyeOffOutline : icons.mdiEyeOutline"
+                hide-details
+                @click:append="isPasswordVisible = !isPasswordVisible"
+              ></v-text-field>
 
-            <v-btn
-              block
-              color="primary"
-              class="mt-6"
-              @click="login"
-            >
-              Login
-            </v-btn>
-          </v-form>
-        </v-card-text>
+              <div class="d-flex align-center justify-space-between flex-wrap">
+                <v-checkbox label="Remember Me" hide-details class="me-3 mt-1"> </v-checkbox>
 
-        <!-- create new account  -->
-        <v-card-text class="d-flex align-center justify-center flex-wrap mt-2">
-          <span class="me-2">
-            New on our platform?
-          </span>
-          <router-link :to="{name:'pages-register'}">
-            Create an account
-          </router-link>
-        </v-card-text>
+                <!-- forgot link -->
+                <a href="javascript:void(0)" class="mt-1"> Forgot Password? </a>
+              </div>
 
-        <!-- divider -->
-        <v-card-text class="d-flex align-center mt-2">
-          <v-divider></v-divider>
-          <span class="mx-5">or</span>
-          <v-divider></v-divider>
-        </v-card-text>
-
-        <!-- social links -->
-        <v-card-actions class="d-flex justify-center">
-          <v-btn
-            v-for="link in socialLink"
-            :key="link.icon"
-            icon
-            class="ms-1"
-          >
-            <v-icon :color="$vuetify.theme.dark ? link.colorInDark : link.color">
-              {{ link.icon }}
-            </v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </div>
+              <v-btn block color="primary" class="mt-6" @click="login"> Login </v-btn>
+            </v-form>
+          </v-card-text>
+        </v-card>
+      </div>
+    </template>
 
     <!-- background triangle shape  -->
     <img
       class="auth-mask-bg"
       height="173"
-      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark':'light'}.png`)"
-    >
+      :src="require(`@/assets/images/misc/mask-${$vuetify.theme.dark ? 'dark' : 'light'}.png`)"
+    />
 
     <!-- tree -->
-    <v-img
-      class="auth-tree"
-      width="247"
-      height="185"
-      src="@/assets/images/misc/tree.png"
-    ></v-img>
+    <v-img class="auth-tree" width="247" height="185" src="@/assets/images/misc/tree.png"></v-img>
 
     <!-- tree  -->
-    <v-img
-      class="auth-tree-3"
-      width="377"
-      height="289"
-      src="@/assets/images/misc/tree-3.png"
-    ></v-img>
+    <v-img class="auth-tree-3" width="377" height="289" src="@/assets/images/misc/tree-3.png"></v-img>
+
+    <v-snackbar v-model="snackbar">
+      {{ message }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn color="pink" text v-bind="attrs" @click="snackbar = false"> Close </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 
@@ -176,10 +124,14 @@ export default {
     ]
 
     return {
+      isLogin: '',
       isPasswordVisible,
       email,
       password,
       socialLink,
+
+      message: '',
+      snackbar: false,
 
       icons: {
         mdiEyeOutline,
@@ -188,22 +140,43 @@ export default {
     }
   },
 
-
   methods: {
     async login() {
       try {
-        let body = {
-          email: this.email,
-          password: this.password
+        if (this.isLogin == 'siswa') {
+          let body = {
+            username: this.email,
+            password: this.password,
+          }
+          let res = await this.axios.post('http://127.0.0.1:8000/api/login_siswa', body)
+          console.log({ res })
+          localStorage.setItem('Authorization', res.data.data.token)
+          localStorage.setItem('isSiswa', 'true')
+          localStorage.setItem('name', res.data.data.user.nama)
+          localStorage.setItem('nisn', res.data.data.user.nisn)
+          this.$router.push('/dashboard')
+        } else {
+          let body = {
+            email: this.email,
+            password: this.password,
+          }
+          let res = await this.axios.post('http://127.0.0.1:8000/api/login', body)
+
+          localStorage.setItem('Authorization', res.data.data.token)
+          localStorage.setItem('isSiswa', 'false')
+          localStorage.setItem('name', res.data.data.user.name)
+          localStorage.setItem('role', res.data.data.user.role)
+          localStorage.setItem('id_petugas', res.data.data.user.id_petugas)
+          this.$router.push('/dashboard')
         }
-        const res = await this.axios.post('http://127.0.0.1:8000/api/login', body)
-        localStorage.setItem('Authorization', res.data.token)
-        this.$router.push('/dashboard')
+        console.log({ res })
       } catch (err) {
-        console.log({err})
+        this.snackbar = true
+        this.message = 'Username or Password is incorrect!'
+        // console.log(err.response.data.error)
       }
-    }
-  }
+    },
+  },
 }
 </script>
 
