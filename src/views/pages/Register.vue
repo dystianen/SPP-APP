@@ -170,7 +170,7 @@ export default {
           password_confirmation: this.password,
           level: this.level,
         }
-        const res = await this.axios.post(appConfig.apiUrl + '/register', body)
+        const res = await this.axios.post('http://127.0.0.1:8000/api/register', body)
         this.$router.push('/pages/login')
       } catch (err) {
         console.log({ err })

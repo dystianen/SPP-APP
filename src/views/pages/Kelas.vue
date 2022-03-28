@@ -1,11 +1,18 @@
 <template>
   <!--Start Data Table -->
-  <v-data-table :headers="headers" :items="items">
+  <v-data-table :headers="headers" :items="items" :search="search">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>KELAS</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          style="margin-right: 20px; width: 10px"
+          single-line
+          hide-details
+        ></v-text-field>
 
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
@@ -100,12 +107,12 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
-import { appConfig } from '../../Config/app'
 
 export default {
   name: 'class',
   data() {
     return {
+      search: '',
       pagination: {
         rowsPerPage: 10,
       },
@@ -173,7 +180,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(appConfig.apiUrl + '/lihatkelas', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
         console.log(res.data)
         this.items = res.data.data
       } catch (err) {
@@ -190,7 +197,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post(appConfig.apiUrl + '/inputkelas', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/inputkelas', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -209,7 +216,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(appConfig.apiUrl + `/updatekelas/${this.id}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatekelas/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -245,7 +252,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(appConfig.apiUrl + `/deletekelas/${this.id}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletekelas/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

@@ -1,12 +1,19 @@
 <template>
   <!--Start Data Table -->
   <div>
-    <v-data-table :headers="headers" :items="items">
+    <v-data-table :headers="headers" :items="items" :search="search">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>SISWA</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            style="margin-right: 20px; width: 10px"
+            single-line
+            hide-details
+          ></v-text-field>
 
           <v-dialog v-model="dialog" max-width="500px" persistent>
             <template v-slot:activator="{ on, attrs }">
@@ -146,12 +153,12 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
-import { appConfig } from '../../Config/app'
 
 export default {
   name: 'student',
   data() {
     return {
+      search: '',
       key: '',
       pagination: {
         rowsPerPage: 10,
@@ -249,7 +256,7 @@ export default {
     async listKelas() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(appConfig.apiUrl + '/lihatkelas', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
         console.log(res.data)
         const result = res.data.data
 
@@ -270,7 +277,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(appConfig.apiUrl + '/getsiswa', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getsiswa', conf)
         console.log(res)
         this.items = res.data
       } catch (err) {
@@ -292,7 +299,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post(appConfig.apiUrl + '/inputsiswa', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/inputsiswa', body, conf)
         this.dialog = false
         this.list()
         this.snackbar = true
@@ -344,7 +351,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(appConfig.apiUrl + `/updatesiswa/${this.nisn}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatesiswa/${this.nisn}`, body, conf)
         this.dialog = false
         this.list()
         this.snackbar = true
@@ -363,7 +370,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(appConfig.apiUrl + `/deletesiswa/${this.nisn}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletesiswa/${this.nisn}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

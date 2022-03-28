@@ -1,11 +1,18 @@
 <template>
   <!--Start Data Table -->
-  <v-data-table :headers="headers" :items="items">
+  <v-data-table :headers="headers" :items="items" :search="search">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Petugas</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          style="margin-right: 20px; width: 10px"
+          single-line
+          hide-details
+        ></v-text-field>
 
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
@@ -106,12 +113,12 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
-import { appConfig } from '../../Config/app'
 
 export default {
   name: 'class',
   data() {
     return {
+      search: '',
       pagination: {
         rowsPerPage: 10,
       },
@@ -196,10 +203,11 @@ export default {
           password: this.password,
           nama_petugas: this.nama_petugas,
           level: this.role,
+          password_condition: this.password,
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post(appConfig.apiUrl + '/inputpetugas', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/register', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -239,7 +247,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(appConfig.apiUrl + `/updatepetugas/${this.id}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatepetugas/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -257,7 +265,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(appConfig.apiUrl + `/deletepetugas/${this.id}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/deletepetugas/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

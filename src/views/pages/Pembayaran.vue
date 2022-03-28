@@ -1,11 +1,18 @@
 <template>
   <!--Start Data Table -->
-  <v-data-table :headers="headers" :items="items">
+  <v-data-table :headers="headers" :items="items" :search="search">
     <template v-slot:top>
       <v-toolbar flat>
         <v-toolbar-title>Pembayaran SPP</v-toolbar-title>
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
+        <v-text-field
+          v-model="search"
+          label="Search"
+          style="margin-right: 20px; width: 10px"
+          single-line
+          hide-details
+        ></v-text-field>
 
         <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
@@ -142,12 +149,12 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil, mdiCalendar } from '@mdi/js'
-import { appConfig } from '../../Config/app'
 
 export default {
   name: 'class',
   data() {
     return {
+      search: '',
       pagination: {
         rowsPerPage: 10,
       },
@@ -241,7 +248,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(appConfig.apiUrl + '/getpembayaran', conf)
+        const res = await this.axios.get('http://127.0.0.1:8000/api/getpembayaran', conf)
         console.log(res.data)
         this.items = res.data.data
       } catch (err) {
@@ -260,7 +267,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post(appConfig.apiUrl + '/inputpembayaran', body, conf)
+        await this.axios.post('http://127.0.0.1:8000/api/inputpembayaran', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -301,7 +308,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(appConfig.apiUrl + `/updatepembayaran/${this.id}`, body, conf)
+        await this.axios.put(`http://127.0.0.1:8000/api/updatepembayaran/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -312,14 +319,14 @@ export default {
     },
 
     setDelete(record) {
-      this.id = record.id_spp
+      this.id = record.id_pembayaran
       this.dialogDelete = true
     },
 
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(appConfig.apiUrl + `/hapuspembayaran/${this.id}`, conf)
+        await this.axios.delete(`http://127.0.0.1:8000/api/hapuspembayaran/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

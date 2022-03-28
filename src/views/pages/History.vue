@@ -1,12 +1,19 @@
 <template>
   <!--Start Data Table -->
   <div>
-    <v-data-table :headers="headers" :items="items">
+    <v-data-table :headers="headers" :items="items" :search="search">
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>HISTORY PEMBAYARAN</v-toolbar-title>
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            label="Search"
+            style="margin-right: 20px; width: 10px"
+            single-line
+            hide-details
+          ></v-text-field>
         </v-toolbar>
       </template>
     </v-data-table>
@@ -24,12 +31,12 @@
 
 <script>
 import { mdiCreditCardOutline, mdiPencil } from '@mdi/js'
-import { appConfig } from '../../Config/app'
 
 export default {
   name: 'student',
   data() {
     return {
+      search: '',
       key: '',
       pagination: {
         rowsPerPage: 10,
@@ -109,7 +116,7 @@ export default {
       try {
         let nisn = localStorage.getItem('nisn')
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(appConfig.apiUrl + `/kurang_bayar/${nisn}`, conf)
+        const res = await this.axios.get(`http://127.0.0.1:8000/api/kurang_bayar/${nisn}`, conf)
         console.log(res)
         this.items = res.data
       } catch (err) {
