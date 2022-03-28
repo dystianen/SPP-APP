@@ -57,14 +57,7 @@
               class="mb-3"
             ></v-text-field>
 
-            <v-select
-              v-model="level"
-              outlined
-              label="Role"
-              hide-details
-              class="mb-3"
-              :items="items_role"
-            ></v-select>
+            <v-select v-model="level" outlined label="Role" hide-details class="mb-3" :items="items_role"></v-select>
 
             <v-checkbox hide-details class="mt-1">
               <template #label>
@@ -121,6 +114,7 @@
 // eslint-disable-next-line object-curly-newline
 import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { ref } from '@vue/composition-api'
+import { appConfig } from '../../Config/app'
 
 export default {
   setup() {
@@ -176,7 +170,7 @@ export default {
           password_confirmation: this.password,
           level: this.level,
         }
-        const res = await this.axios.post('http://127.0.0.1:8000/api/register', body)
+        const res = await this.axios.post(appConfig.apiUrl + '/register', body)
         this.$router.push('/pages/login')
       } catch (err) {
         console.log({ err })

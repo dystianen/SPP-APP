@@ -94,6 +94,7 @@
 // eslint-disable-next-line object-curly-newline
 import { mdiFacebook, mdiTwitter, mdiGithub, mdiGoogle, mdiEyeOutline, mdiEyeOffOutline } from '@mdi/js'
 import { ref } from '@vue/composition-api'
+import { appConfig } from '../../Config/app'
 
 export default {
   setup() {
@@ -148,7 +149,7 @@ export default {
             username: this.email,
             password: this.password,
           }
-          let res = await this.axios.post('http://127.0.0.1:8000/api/login_siswa', body)
+          let res = await this.axios.post(appConfig.apiUrl + '/login_siswa', body)
           console.log({ res })
           localStorage.setItem('Authorization', res.data.data.token)
           localStorage.setItem('isSiswa', 'true')
@@ -160,7 +161,7 @@ export default {
             email: this.email,
             password: this.password,
           }
-          let res = await this.axios.post('http://127.0.0.1:8000/api/login', body)
+          let res = await this.axios.post(appConfig.apiUrl + '/login', body)
 
           localStorage.setItem('Authorization', res.data.data.token)
           localStorage.setItem('isSiswa', 'false')

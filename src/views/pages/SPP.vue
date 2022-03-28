@@ -7,13 +7,13 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create</v-btn>
           </template>
           <v-card>
             <v-card-title>
-              <span>Create Petugas</span>
+              <span>Create SPP</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -39,10 +39,10 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogEdit" max-width="500px">
+        <v-dialog v-model="dialogEdit" max-width="500px" persistent>
           <v-card>
             <v-card-title>
-              <span>Edit Petugas</span>
+              <span>Edit SPP</span>
             </v-card-title>
             <v-card-text>
               <v-container>
@@ -62,13 +62,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="reset"> Cancel</v-btn>
               <v-btn color="blue darken-1" text @click="saveEdit"> Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="500px" persistent>
           <v-card>
             <v-card-title>Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
@@ -100,6 +100,7 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+import { appConfig } from '../../Config/app'
 
 export default {
   name: 'class',
@@ -172,7 +173,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get('http://127.0.0.1:8000/api/getspp', conf)
+        const res = await this.axios.get(appConfig.apiUrl + '/getspp', conf)
         console.log(res.data)
         this.items = res.data.data
       } catch (err) {
@@ -189,7 +190,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputspp', body, conf)
+        await this.axios.post(appConfig.apiUrl + '/inputspp', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -208,6 +209,15 @@ export default {
       this.dialogEdit = true
     },
 
+    reset() {
+      this.id = ''
+      this.angkatan = ''
+      this.tahun = ''
+      this.nominal = ''
+
+      this.dialogEdit = false
+    },
+
     async saveEdit() {
       try {
         const body = {
@@ -217,7 +227,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatespp/${this.id}`, body, conf)
+        await this.axios.put(appConfig.apiUrl + `/updatespp/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -235,7 +245,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletespp/${this.id}`, conf)
+        await this.axios.delete(appConfig.apiUrl + `/deletespp/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

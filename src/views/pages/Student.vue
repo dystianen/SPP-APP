@@ -8,14 +8,14 @@
           <v-divider class="mx-4" inset vertical></v-divider>
           <v-spacer></v-spacer>
 
-          <v-dialog v-model="dialog" max-width="500px">
+          <v-dialog v-model="dialog" max-width="500px" persistent>
             <template v-slot:activator="{ on, attrs }">
               <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create </v-btn>
             </template>
             <v-card>
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">User Profile</span>
+                  <span class="text-h5">Create Student</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -58,11 +58,11 @@
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogEdit" max-width="500px">
+          <v-dialog v-model="dialogEdit" max-width="500px" persistent>
             <v-card>
               <v-card>
                 <v-card-title>
-                  <span class="text-h5">User Profile</span>
+                  <span class="text-h5">Edit Sstudent</span>
                 </v-card-title>
                 <v-card-text>
                   <v-container>
@@ -99,13 +99,13 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel </v-btn>
+                <v-btn color="blue darken-1" text @click="reset"> Cancel </v-btn>
                 <v-btn color="blue darken-1" text @click="saveEdit"> Save </v-btn>
               </v-card-actions>
             </v-card>
           </v-dialog>
 
-          <v-dialog v-model="dialogDelete" max-width="500px">
+          <v-dialog v-model="dialogDelete" max-width="500px" persistent>
             <v-card>
               <v-card-title>Are you sure you want to delete this item?</v-card-title>
               <v-card-actions>
@@ -146,6 +146,7 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+import { appConfig } from '../../Config/app'
 
 export default {
   name: 'student',
@@ -248,7 +249,7 @@ export default {
     async listKelas() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get('http://127.0.0.1:8000/api/lihatkelas', conf)
+        const res = await this.axios.get(appConfig.apiUrl + '/lihatkelas', conf)
         console.log(res.data)
         const result = res.data.data
 
@@ -269,7 +270,7 @@ export default {
     async list() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get('http://127.0.0.1:8000/api/getsiswa', conf)
+        const res = await this.axios.get(appConfig.apiUrl + '/getsiswa', conf)
         console.log(res)
         this.items = res.data
       } catch (err) {
@@ -291,7 +292,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputsiswa', body, conf)
+        await this.axios.post(appConfig.apiUrl + '/inputsiswa', body, conf)
         this.dialog = false
         this.list()
         this.snackbar = true
@@ -315,6 +316,20 @@ export default {
       this.dialogEdit = true
     },
 
+    reset() {
+      this.id = ''
+      this.nisn = ''
+      this.nis = ''
+      this.id_kelas = ''
+      this.nama = ''
+      this.alamat = ''
+      this.phone = ''
+      this.username = ''
+      this.password = ''
+
+      this.dialogEdit = false
+    },
+
     async saveEdit() {
       try {
         const body = {
@@ -329,7 +344,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatesiswa/${this.nisn}`, body, conf)
+        await this.axios.put(appConfig.apiUrl + `/updatesiswa/${this.nisn}`, body, conf)
         this.dialog = false
         this.list()
         this.snackbar = true
@@ -348,7 +363,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletesiswa/${this.nisn}`, conf)
+        await this.axios.delete(appConfig.apiUrl + `/deletesiswa/${this.nisn}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

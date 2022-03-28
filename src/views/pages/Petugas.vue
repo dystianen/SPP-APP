@@ -7,7 +7,7 @@
         <v-divider class="mx-4" inset vertical></v-divider>
         <v-spacer></v-spacer>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="500px" persistent>
           <template v-slot:activator="{ on, attrs }">
             <v-btn color="primary" dark v-bind="attrs" v-on="on"> Create</v-btn>
           </template>
@@ -42,7 +42,7 @@
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogEdit" max-width="500px">
+        <v-dialog v-model="dialogEdit" max-width="500px" persistent>
           <v-card>
             <v-card-title>
               <span>Edit Petugas</span>
@@ -68,13 +68,13 @@
 
             <v-card-actions>
               <v-spacer></v-spacer>
-              <v-btn color="blue darken-1" text @click="dialogEdit = false"> Cancel</v-btn>
+              <v-btn color="blue darken-1" text @click="reset"> Cancel</v-btn>
               <v-btn color="blue darken-1" text @click="saveEdit"> Save</v-btn>
             </v-card-actions>
           </v-card>
         </v-dialog>
 
-        <v-dialog v-model="dialogDelete" max-width="500px">
+        <v-dialog v-model="dialogDelete" max-width="500px" persistent>
           <v-card>
             <v-card-title>Are you sure you want to delete this item?</v-card-title>
             <v-card-actions>
@@ -106,6 +106,7 @@
 
 <script>
 import { mdiDeleteOutline, mdiPencil } from '@mdi/js'
+import { appConfig } from '../../Config/app'
 
 export default {
   name: 'class',
@@ -198,7 +199,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputpetugas', body, conf)
+        await this.axios.post(appConfig.apiUrl + '/inputpetugas', body, conf)
         this.list()
         this.dialog = false
         this.snackbar = true
@@ -218,6 +219,16 @@ export default {
       this.dialogEdit = true
     },
 
+    reset() {
+      this.id = ''
+      this.username = ''
+      this.password = ''
+      this.nama_petugas = ''
+      this.role = ''
+
+      this.dialogEdit = false
+    },
+
     async saveEdit() {
       try {
         const body = {
@@ -228,7 +239,7 @@ export default {
         }
 
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatepetugas/${this.id}`, body, conf)
+        await this.axios.put(appConfig.apiUrl + `/updatepetugas/${this.id}`, body, conf)
         this.list()
         this.dialogEdit = false
         this.snackbar = true
@@ -246,7 +257,7 @@ export default {
     async deleteItem() {
       try {
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletepetugas/${this.id}`, conf)
+        await this.axios.delete(appConfig.apiUrl + `/deletepetugas/${this.id}`, conf)
         this.list()
         this.dialogDelete = false
       } catch (err) {

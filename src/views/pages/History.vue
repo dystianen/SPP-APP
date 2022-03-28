@@ -24,6 +24,7 @@
 
 <script>
 import { mdiCreditCardOutline, mdiPencil } from '@mdi/js'
+import { appConfig } from '../../Config/app'
 
 export default {
   name: 'student',
@@ -104,96 +105,13 @@ export default {
   },
 
   methods: {
-    close() {
-      this.dialog = false
-    },
-
     async list() {
       try {
         let nisn = localStorage.getItem('nisn')
         let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        const res = await this.axios.get(`http://127.0.0.1:8000/api/kurang_bayar/${nisn}`, conf)
+        const res = await this.axios.get(appConfig.apiUrl + `/kurang_bayar/${nisn}`, conf)
         console.log(res)
         this.items = res.data
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    async save() {
-      try {
-        const body = {
-          nisn: this.nisn,
-          nis: this.nis,
-          nama: this.nama,
-          id_kelas: this.id_kelas,
-          alamat: this.alamat,
-          no_telp: this.phone,
-          username: this.username,
-          password: this.password,
-        }
-
-        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.post('http://127.0.0.1:8000/api/inputsiswa', body, conf)
-        this.dialog = false
-        this.list()
-        this.snackbar = true
-        this.message = 'Created Successfully'
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    setEditValue(record) {
-      this.id = record.id
-      this.nisn = record.nisn
-      this.nis = record.nis
-      this.id_kelas = record.id_kelas
-      this.nama = record.nama
-      this.alamat = record.alamat
-      this.phone = record.no_telp
-      this.username = record.username
-      this.password = record.password
-
-      this.dialogEdit = true
-    },
-
-    async saveEdit() {
-      try {
-        const body = {
-          nisn: this.nisn,
-          nis: this.nis,
-          nama: this.nama,
-          id_kelas: this.id_kelas,
-          alamat: this.alamat,
-          no_telp: this.phone,
-          username: this.username,
-          password: this.password,
-        }
-
-        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.put(`http://127.0.0.1:8000/api/updatesiswa/${this.nisn}`, body, conf)
-        this.dialog = false
-        this.list()
-        this.snackbar = true
-        this.message = 'Update Successfully'
-        this.dialogEdit = false
-      } catch (err) {
-        console.log(err)
-      }
-    },
-
-    setDelete(record) {
-      this.nisn = record.nisn
-      this.dialogDelete = true
-    },
-
-    async deleteItem() {
-      try {
-        let conf = { headers: { Authorization: 'Bearer ' + this.key } }
-        await this.axios.delete(`http://127.0.0.1:8000/api/deletesiswa/${this.nisn}`, conf)
-        this.list()
-        this.dialogDelete = false
       } catch (err) {
         console.log(err)
       }
